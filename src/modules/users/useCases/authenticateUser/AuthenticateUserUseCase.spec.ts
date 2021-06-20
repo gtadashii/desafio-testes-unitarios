@@ -3,11 +3,11 @@ import { InMemoryUsersRepository } from "../../repositories/in-memory/InMemoryUs
 import { CreateUserUseCase } from "../createUser/CreateUserUseCase";
 import { AuthenticateUserUseCase } from "./AuthenticateUserUseCase";
 
-describe("Authenticate User", () => {
+let userRepositoryInMemory: InMemoryUsersRepository;
+let createUserUseCase: CreateUserUseCase;
+let authenticateUserUseCase: AuthenticateUserUseCase;
 
-  let userRepositoryInMemory: InMemoryUsersRepository;
-  let createUserUseCase: CreateUserUseCase;
-  let authenticateUserUseCase: AuthenticateUserUseCase;
+describe("Authenticate User", () => {
 
   beforeAll(() => {
     userRepositoryInMemory = new InMemoryUsersRepository();
