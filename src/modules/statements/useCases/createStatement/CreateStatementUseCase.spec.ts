@@ -122,4 +122,41 @@ describe("Create Statement", () => {
     }).rejects.toBeInstanceOf(AppError);
   });
 
+  it("Should be able to transfer values between to existing users", async () => {
+    const sender_user = await createUserUseCase.execute({
+      name: "Sender User",
+      email: "sender@test.com",
+      password: "12345"
+    });
+
+    const receiver_user = await createUserUseCase.execute({
+      name: "Receiver User",
+      email: "receiver@test.com",
+      password: "12345"
+    });
+
+    await createStatementUseCase.execute({
+      user_id: sender_user.id,
+      type: "deposit",
+      amount: 1000,
+      description: "Test Deposit"
+    } as ICreateStatementDTO);
+
+    await createStatementUseCase.execute({
+      user_id: receiver_user.id,
+      sender_id: sender_user.id,
+      type: "transfer",
+      amount: 1000,
+      description: "Test Transfer"
+    } as ICreateStatementDTO);
+
+    const sender_balance = await statementsRepositoryInMemory.getUserBalance({ user_id: sender_user.id as string });
+
+    const receiver_user_balance = await statementsRepositoryInMemory.getUserBalance({ user_id: receiver_user.id as string });
+
+    expect(sender_balance.balance).toEqual(0);
+    expect(receiver_user_balance.balance).toEqual(1000);
+
+  });
+
 });
